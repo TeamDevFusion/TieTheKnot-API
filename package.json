@@ -46,7 +46,7 @@
     "helmet": "^7.1.0",
     "hichchi-nestjs-auth": "^1.1.0",
     "hichchi-nestjs-common": "^1.1.0",
-    "hichchi-nestjs-crud": "^1.1.0",
+    "hichchi-nestjs-crud": "^1.1.1",
     "hichchi-nestjs-socket": "^0.0.1",
     "hichchi-utils": "^1.0.8",
     "i": "^0.3.7",
