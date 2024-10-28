@@ -1,9 +1,9 @@
 // noinspection JSUnusedGlobalSymbols
 
 export enum UserStatus {
-    ACTIVE = "ACTIVE",
-    INACTIVE = "INACTIVE",
-    PENDING = "PENDING",
-    SUSPENDED = "SUSPENDED",
-    DELETED = "DELETED",
+    ACTIVE = "active",
+    INACTIVE = "inactive",
+    PENDING = "pending",
+    SUSPENDED = "suspended",
+    DELETED = "deleted",
 }

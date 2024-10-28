@@ -19,6 +19,7 @@ import { Role } from "../../../core/enums/role.enum";
 import { TokenUser } from "../../../core/types/auth.types";
 import { UserErrors } from "../responses";
 import { IStatusResponse } from "hichchi-nestjs-common/interfaces";
+import configuration from "../../../core/configs/configuration";
 
 @Injectable()
 export class UserService extends CrudService<UserEntity> implements IUserService {
@@ -29,10 +30,12 @@ export class UserService extends CrudService<UserEntity> implements IUserService
         super(userRepository, "user", "email");
     }
 
-    async registerUser(registerUserDto: RegisterUserDto): Promise<IUser> {
-        const user = await super.save({ ...registerUserDto, role: Role.USER, username: registerUserDto.email });
-        await this.emailService.sendWelcomeMail({ email: registerUserDto.email });
-        return user;
+    registerUser(registerUserDto: RegisterUserDto): Promise<IUser> {
+        return this.transaction(async (): Promise<UserEntity> => {
+            const user = await super.save({ ...registerUserDto, role: Role.USER, username: registerUserDto.email });
+            await this.emailService.sendWelcomeMail({ email: registerUserDto.email });
+            return user;
+        });
     }
 
     async getUserById(id: string): Promise<IUser | undefined> {
@@ -60,12 +63,8 @@ export class UserService extends CrudService<UserEntity> implements IUserService
         return this.getOne({ where: { id, role }, relations: ["vendorType"] });
     }
 
-    async createUser(
-        dto: CreateUserDto | CreateClientDto | CreateVendorDto,
-        role: Role,
-        createdBy: IUser,
-    ): Promise<IUser> {
-        const rawPassword = "user@ttk"; // TODO: move to config
+    createUser(dto: CreateUserDto | CreateClientDto | CreateVendorDto, role: Role, createdBy: IUser): Promise<IUser> {
+        const rawPassword = configuration().app.defaultPassword;
         const { password, salt } = AuthService.generatePassword(rawPassword);
 
         const client: IClient = {
@@ -82,22 +81,24 @@ export class UserService extends CrudService<UserEntity> implements IUserService
             phone: (dto as CreateVendorDto).phone,
         };
 
-        const user = await this.save(
-            {
-                ...dto,
-                password,
-                salt,
-                role,
-                vendorTypeId: (dto as CreateVendorDto).vendorTypeId,
-                status: UserStatus.ACTIVE,
-                client: role === Role.USER ? client : undefined,
-                vendor: role === Role.VENDOR ? vendor : undefined,
-            },
-            undefined,
-            createdBy,
-        );
-        await this.emailService.sendWelcomeMail({ email: dto.email, name: user.firstName, password: rawPassword });
-        return user;
+        return this.transaction(async (): Promise<UserEntity> => {
+            const user = await this.save(
+                {
+                    ...dto,
+                    password,
+                    salt,
+                    role,
+                    vendorTypeId: (dto as CreateVendorDto).vendorTypeId,
+                    status: UserStatus.ACTIVE,
+                    client: role === Role.USER ? client : undefined,
+                    vendor: role === Role.VENDOR ? vendor : undefined,
+                },
+                undefined,
+                createdBy,
+            );
+            await this.emailService.sendWelcomeMail({ email: dto.email, name: user.firstName, password: rawPassword });
+            return user;
+        });
     }
 
     async updateUser(
@@ -156,6 +157,8 @@ export class UserService extends CrudService<UserEntity> implements IUserService
             throw new NotFoundException(UserErrors.USER_404_USER_NOT_FOUND(role));
         }
 
-        return this.deleteByIds(ids, deletedBy);
+        return this.transaction((): Promise<IStatusResponse> => {
+            return this.deleteByIds(ids, deletedBy);
+        });
     }
 }

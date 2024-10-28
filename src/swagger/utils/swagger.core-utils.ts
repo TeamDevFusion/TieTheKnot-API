@@ -72,8 +72,8 @@ export const addSwaggerPath = (doc: OpenAPIObject, path: string, options: Swagge
 export const setupSwagger = (app: INestApplication): OpenAPIObject => {
     const options = new DocumentBuilder()
         .addBearerAuth()
-        .setTitle("TTK API") // TODO: use configuration()
-        .setDescription("API Documentation") // TODO: use configuration()
+        .setTitle(configuration().app.title)
+        .setDescription(configuration().swagger.description)
         .setVersion(configuration().app.version)
         .build();
 
