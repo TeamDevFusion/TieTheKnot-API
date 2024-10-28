@@ -1,13 +1,20 @@
-import { Controller, Get, Res } from "@nestjs/common";
+import { Controller, Get } from "@nestjs/common";
 import { AppService } from "./app.service";
-import { Response } from "express";
+import { ApiBadRequestResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { srE400, srE404, srHealthCheck } from "./swagger/utils/swagger-responses";
 
 @Controller()
+@ApiTags("App")
+@ApiBadRequestResponse(srE400)
+@ApiNotFoundResponse(srE404)
 export class AppController {
-    constructor(private readonly appService: AppService) {}
+    // noinspection JSUnusedLocalSymbols
+    constructor(readonly app: AppService) {}
 
-    @Get()
-    health(@Res() res: Response): Response {
-        return res.status(200).json({ status: "UP" });
+    @Get("/health")
+    @ApiOperation({ description: "Health Check" })
+    @ApiOkResponse(srHealthCheck)
+    health(): { status: "UP" } {
+        return { status: "UP" };
     }
 }
