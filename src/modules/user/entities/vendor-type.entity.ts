@@ -1,12 +1,13 @@
-import { Column, Entity, OneToMany } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
 import { EntityName } from "../../../core/enums";
-import { BaseEntity } from "../../../core/entities";
-import { UserLogEntity } from "../../app-config";
 import { IVendorType } from "../interfaces";
 import { UserEntity } from "./user.entity";
+import { UserLogEntity } from "../../app-config/entities";
+import { BaseEntityTemplate } from "hichchi-nestjs-crud";
+import { IUserEntity } from "hichchi-nestjs-common/interfaces";
 
 @Entity(EntityName.VENDOR_TYPE)
-export class VendorTypeEntity extends BaseEntity implements IVendorType {
+export class VendorTypeEntity extends BaseEntityTemplate implements IVendorType {
     @Column()
     name: string;
 
@@ -15,4 +16,13 @@ export class VendorTypeEntity extends BaseEntity implements IVendorType {
 
     @OneToMany(() => UserLogEntity, log => log.user)
     logs?: UserLogEntity[];
+
+    @ManyToOne(() => UserEntity, { nullable: true })
+    createdBy?: IUserEntity;
+
+    @ManyToOne(() => UserEntity, { nullable: true })
+    updatedBy?: IUserEntity;
+
+    @ManyToOne(() => UserEntity, { nullable: true })
+    deletedBy?: IUserEntity;
 }

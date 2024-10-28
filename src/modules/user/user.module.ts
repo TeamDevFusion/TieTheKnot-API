@@ -4,8 +4,8 @@ import { UserEntity, VendorTypeEntity } from "./entities";
 import { UserController } from "./controllers";
 import { UserService, VendorTypeService } from "./services";
 import { UserRepository, VendorTypeRepository } from "./repositories";
+import { AppConfigModule } from "../app-config/app-config.module";
 // import { FileUploadModule } from "../file-upload/file-upload.module";
-import { AppConfigModule } from "../app-config";
 
 @Module({
     imports: [

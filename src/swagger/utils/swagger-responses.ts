@@ -1,9 +1,11 @@
 // noinspection JSUnusedGlobalSymbols
 
-import { IUser, IVendorType, UserStatus, ViewUserDto, ViewVendorTypeDto } from "../../modules/user";
 import { sbClient, sbUser, sbVendor } from "./swagger-request";
 import { faker } from "@faker-js/faker";
 import { Role } from "../../core/enums/role.enum";
+import { ViewUserDto, ViewVendorTypeDto } from "../../modules/user/dtos";
+import { IUser, IVendorType } from "../../modules/user/interfaces";
+import { UserStatus } from "../../modules/user/enums";
 
 export const srHealthCheck = { schema: { example: { status: "UP" } } };
 

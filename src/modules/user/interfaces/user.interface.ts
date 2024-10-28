@@ -1,11 +1,11 @@
 import { UserStatus } from "../enums";
 import { IUserEntity } from "hichchi-nestjs-common/interfaces";
 import { IBaseEntity } from "hichchi-nestjs-crud";
-import { IUserLog } from "../../app-config";
 import { Role } from "../../../core/enums/role.enum";
 import { IClient } from "./client.interface";
 import { IVendor } from "./vendor.interface";
 import { IPlanner } from "./planner.interface";
+import { IUserLog } from "../../app-config/interfaces";
 
 export interface IUserDto {
     firstName: string;

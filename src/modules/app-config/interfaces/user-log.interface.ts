@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { IUser, IVendorType } from "../../user";
 import { Endpoint } from "../../../core/enums";
 import { RequestMethod } from "../enums";
 import { LogSnapshot, UserAction } from "../types";
+import { IUser, IVendorType } from "../../user/interfaces";
 
 // TODO: ### Add other entities
 export interface IUserLogDto {

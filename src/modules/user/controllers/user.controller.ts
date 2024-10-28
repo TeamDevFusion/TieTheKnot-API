@@ -10,7 +10,6 @@ import {
 import { JwtAuthGuard, RoleGuard } from "hichchi-nestjs-auth/auth/guards";
 import { CurrentUser, Roles } from "hichchi-nestjs-auth/auth/decorators";
 import { Role } from "../../../core/enums/role.enum";
-import { ParamType, UseUserLogInterceptor } from "../../app-config";
 import {
     CreateClientDto,
     CreateUserDto,
@@ -45,6 +44,8 @@ import {
     srVendor,
     srVendorType,
 } from "../../../swagger/utils/swagger-responses";
+import { UseUserLogInterceptor } from "../../app-config/decorators";
+import { ParamType } from "../../app-config/enums";
 
 @Controller(Endpoint.USER)
 @ApiTags("User")

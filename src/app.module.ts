@@ -8,9 +8,11 @@ import { ServeStaticModule } from "@nestjs/serve-static";
 import { HichchiAuthModule } from "hichchi-nestjs-auth";
 import configuration from "./core/configs/configuration";
 import { AuthField, AuthMethod } from "hichchi-nestjs-auth/auth/enums";
-import { RegisterUserDto, UserModule, UserService, ViewUserDto } from "./modules/user";
-import { AppConfigModule } from "./modules/app-config";
 import { EmailModule } from "./modules/email";
+import { UserModule } from "./modules/user/user.module";
+import { UserService } from "./modules/user/services";
+import { RegisterUserDto, ViewUserDto } from "./modules/user/dtos";
+import { AppConfigModule } from "./modules/app-config/app-config.module";
 
 @Module({
     imports: [

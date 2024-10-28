@@ -58,6 +58,14 @@ $ npm run test:e2e
 # test coverage
 $ npm run test:cov
 ```
+## Migrations
+
+```bash
+
+# generate
+$ npm run migration:generate --name=initial
+
+```
 
 ## Resources
 

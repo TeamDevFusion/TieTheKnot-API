@@ -10,8 +10,8 @@ import configuration from "../../core/configs/configuration";
 import { INestApplication } from "@nestjs/common";
 import { authResponse, srClient, srE400, srE401 } from "./swagger-responses";
 import { faker } from "@faker-js/faker";
-import { PlanStatus } from "../../modules/user";
 import { sbClient, sbRegClient, sbRegVendor, sbUser, sbVendor } from "./swagger-request";
+import { PlanStatus } from "../../modules/user/enums";
 
 export const addSwaggerSchema = (doc: OpenAPIObject, name: string, schema: SwaggerSchema): ReferenceObject => {
     const properties: Record<string, SchemaObject | ReferenceObject> = {};

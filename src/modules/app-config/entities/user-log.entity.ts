@@ -4,8 +4,8 @@ import { Endpoint, EntityName } from "../../../core/enums";
 import { IUserLog } from "../interfaces";
 import { LogSnapshot, UserAction } from "../types";
 import { RequestMethod } from "../enums";
-import { UserEntity, VendorTypeEntity } from "../../user";
 import { IUserEntity } from "hichchi-nestjs-common/interfaces";
+import { UserEntity, VendorTypeEntity } from "../../user/entities";
 
 // TODO: ### Add other entities
 @Entity(EntityName.USER_LOG)

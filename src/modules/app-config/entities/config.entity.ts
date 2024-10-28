@@ -1,10 +1,10 @@
 import { Column, Entity } from "typeorm";
 import { Config, EntityName } from "../../../core/enums";
 import { IConfig } from "../interfaces";
-import { BaseEntity } from "../../../core/entities";
+import { BaseEntityTemplate } from "hichchi-nestjs-crud";
 
 @Entity(EntityName.CONFIG)
-export class ConfigEntity extends BaseEntity implements IConfig {
+export class ConfigEntity extends BaseEntityTemplate implements IConfig {
     @Column({ type: "enum", enum: Config })
     config: Config;
 

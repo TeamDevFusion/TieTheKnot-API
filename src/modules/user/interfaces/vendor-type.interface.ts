@@ -1,6 +1,6 @@
 import { IBaseEntity } from "hichchi-nestjs-crud";
-import { IUserLog } from "../../app-config";
 import { IUser, IVewUserDto } from "./user.interface";
+import { IUserLog } from "../../app-config/interfaces";
 
 export interface IVendorDto {
     name: string;

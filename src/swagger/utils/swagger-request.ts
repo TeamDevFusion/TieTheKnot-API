@@ -4,10 +4,10 @@ import {
     CreateClientDto,
     CreateUserDto,
     CreateVendorDto,
-    PlanStatus,
     RegisterClientDto,
     RegisterVendorDto,
-} from "../../modules/user";
+} from "../../modules/user/dtos";
+import { PlanStatus } from "../../modules/user/enums";
 
 const firstName = faker.person.firstName();
 const lastName = faker.person.lastName();
