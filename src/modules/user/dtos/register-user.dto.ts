@@ -1,4 +1,4 @@
-import { IsEnum, IsNotEmpty, IsNotEmptyObject, IsOptional, ValidateIf, ValidateNested } from "class-validator";
+import { IsEnum, IsNotEmpty, IsNotEmptyObject, ValidateIf, ValidateNested } from "class-validator";
 import { AuthErrors, RegisterDto } from "hichchi-nestjs-auth";
 import { toErrString } from "hichchi-nestjs-common/converters";
 import { Role } from "../../../core/enums/role.enum";
@@ -9,17 +9,27 @@ import { RegisterVendorDto } from "./register-vendor.dto";
 import { PlannerRegisterDto } from "./planner-register.dto";
 import { Type } from "class-transformer";
 import { IUser } from "../interfaces";
+import { sbRegUser } from "../../../swagger/utils/swagger-request";
 
 export class RegisterUserDto extends RegisterDto implements Partial<IUser> {
-    @ApiPropertyOptional({ enum: Object.values(Role).slice(1, 3) })
+    @ApiPropertyOptional({ enum: Object.values(Role).slice(1, 3), example: sbRegUser.role })
     @IsEnum(Object.values(Role).slice(1, 3), toErrString(UserErrors.USER_400_INVALID_ROLE))
-    @IsOptional()
-    role?: Role;
+    @IsNotEmpty(toErrString(UserErrors.USER_400_EMPTY_ROLE))
+    role: Role;
 
+    @ApiProperty({ example: sbRegUser.firstName })
+    @IsNotEmpty(toErrString(AuthErrors.USER_400_EMPTY_FNAME))
+    firstName: string;
+
+    @ApiProperty({ example: sbRegUser.lastName })
+    @IsNotEmpty(toErrString(AuthErrors.USER_400_EMPTY_LNAME))
+    lastName: string;
+
+    @ApiProperty({ example: sbRegUser.email })
     @IsNotEmpty(toErrString(AuthErrors.AUTH_400_EMPTY_EMAIL))
     email: string;
 
-    @ApiProperty()
+    @ApiProperty({ example: sbRegUser.password })
     @IsNotEmpty(toErrString(AuthErrors.AUTH_400_EMPTY_PASSWORD))
     password: string;
 

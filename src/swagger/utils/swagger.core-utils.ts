@@ -10,7 +10,7 @@ import configuration from "../../core/configs/configuration";
 import { INestApplication } from "@nestjs/common";
 import { authResponse, srClient, srE400, srE401 } from "./swagger-responses";
 import { faker } from "@faker-js/faker";
-import { sbClient, sbRegClient, sbRegVendor, sbUser, sbVendor } from "./swagger-request";
+import { sbClient, sbRegUser, sbUser, sbVendor } from "./swagger-request";
 import { PlanStatus } from "../../modules/user/enums";
 
 export const addSwaggerSchema = (doc: OpenAPIObject, name: string, schema: SwaggerSchema): ReferenceObject => {
@@ -52,7 +52,8 @@ export const addSwaggerPath = (doc: OpenAPIObject, path: string, options: Swagge
     doc.paths[path] = {
         post: {
             tags: [options.tag],
-            summary: options.description,
+            summary: options.summary,
+            description: options.description,
             requestBody: options.requestBody
                 ? {
                       required: options.requestBody.required,
@@ -117,18 +118,25 @@ export const setupSwagger = (app: INestApplication): OpenAPIObject => {
     });
 
     const RegisterDto = addSwaggerSchema(doc, "RegisterDto", {
-        role: { type: "enum", enum: Object.values(Role).slice(1), default: Role.USER },
+        role: {
+            type: "enum",
+            enum: Object.values(Role).slice(1),
+            required: true,
+            default: Role.USER,
+            example: Role.USER,
+        },
         email: { type: "string", required: true, example: sbUser.email },
         password: { type: "string", required: true, example: faker.string.alphanumeric(8) },
         firstName: { type: "string", required: true, example: sbUser.firstName },
         lastName: { type: "string", required: true, example: sbUser.lastName },
         client: { type: "RegisterClientDto" },
         vendor: { type: "RegisterVendorDto" },
+        planner: { type: "PlannerRegisterDto" },
     });
 
     addSwaggerPath(doc, `/${configuration().app.version}/auth/login`, {
         tag: "Auth",
-        description: "Login to the system",
+        summary: "Login to the system",
         requestBody: {
             required: true,
             contentType: "application/json",
@@ -157,12 +165,13 @@ export const setupSwagger = (app: INestApplication): OpenAPIObject => {
 
     addSwaggerPath(doc, `/${configuration().app.version}/auth/register`, {
         tag: "Auth",
-        description: "Register a new user",
+        summary: "Register a new user",
+        description: "Only pass one of the client, vendor or planner objects. The passed object must match the role",
         requestBody: {
             required: true,
             contentType: "application/json",
             schema: RegisterDto,
-            example: { ...sbUser, client: sbRegClient, vendor: sbRegVendor },
+            example: sbRegUser,
         },
         responses: {
             201: {
@@ -179,7 +188,7 @@ export const setupSwagger = (app: INestApplication): OpenAPIObject => {
 
     addSwaggerPath(doc, `/${configuration().app.version}/auth/me`, {
         tag: "Auth",
-        description: "Get current user",
+        summary: "Get current user",
         responses: {
             200: {
                 description: "User retrieved successfully",
@@ -199,7 +208,7 @@ export const setupSwagger = (app: INestApplication): OpenAPIObject => {
 
     addSwaggerPath(doc, `/${configuration().app.version}/auth/change-password`, {
         tag: "Auth",
-        description: "Change user password",
+        summary: "Change user password",
         requestBody: {
             required: true,
             contentType: "application/json",
@@ -224,7 +233,7 @@ export const setupSwagger = (app: INestApplication): OpenAPIObject => {
 
     addSwaggerPath(doc, `/${configuration().app.version}/auth/logout`, {
         tag: "Auth",
-        description: "Logout user",
+        summary: "Logout user",
         requestBody: {
             required: true,
             contentType: "application/json",

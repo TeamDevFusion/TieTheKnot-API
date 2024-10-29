@@ -7,7 +7,8 @@ export interface SwaggerSchema {
 
 export interface SwaggerPathOptions {
     tag: string;
-    description: string;
+    summary: string;
+    description?: string;
     requestBody?: {
         required: boolean;
         contentType: "application/json";

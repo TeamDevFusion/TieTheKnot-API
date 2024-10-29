@@ -5,12 +5,15 @@ import {
     CreateUserDto,
     CreateVendorDto,
     RegisterClientDto,
+    RegisterUserDto,
     RegisterVendorDto,
 } from "../../modules/user/dtos";
 import { PlanStatus } from "../../modules/user/enums";
+import { Role } from "../../core/enums/role.enum";
 
 const firstName = faker.person.firstName();
 const lastName = faker.person.lastName();
+const password = faker.internet.password();
 
 export const sbUser: CreateUserDto = {
     firstName,
@@ -24,11 +27,6 @@ export const sbRegClient: RegisterClientDto = {
     partnerLastName: faker.person.lastName(),
 };
 
-export const sbClient: CreateClientDto = {
-    ...sbUser,
-    ...sbRegClient,
-};
-
 export const sbRegVendor: RegisterVendorDto = {
     vendorTypeId: faker.string.uuid(),
     companyName: faker.company.name(),
@@ -37,9 +35,25 @@ export const sbRegVendor: RegisterVendorDto = {
     phone: faker.phone.number(),
 };
 
+export const sbClient: CreateClientDto = {
+    ...sbUser,
+    ...sbRegClient,
+};
+
 export const sbVendor: CreateVendorDto = {
     ...sbUser,
     ...sbRegVendor,
+};
+
+export const sbRegUser: RegisterUserDto = {
+    role: Role.USER,
+    firstName,
+    lastName,
+    email: faker.internet.email({ firstName, lastName }).toLowerCase(),
+    password,
+    client: sbRegClient,
+    vendor: sbRegVendor,
+    planner: {},
 };
 
 export const sbVendorType = {

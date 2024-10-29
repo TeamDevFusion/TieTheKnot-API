@@ -56,6 +56,11 @@ const UserErrors = {
         code: "USER_400_EMPTY_PLANNER",
         message: "Planner details cannot be empty!",
     },
+    USER_400_EMPTY_ROLE: {
+        status: 400,
+        code: "USER_400_EMPTY_ROLE",
+        message: "Role cannot be empty!",
+    },
     USER_400_INVALID_ROLE: {
         status: 400,
         code: "USER_400_INVALID_ROLE",

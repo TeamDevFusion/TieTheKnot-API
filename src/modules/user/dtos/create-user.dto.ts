@@ -7,7 +7,7 @@ import { sbUser } from "../../../swagger/utils/swagger-request";
 
 export class CreateUserDto implements IUserDto {
     @ApiProperty({ example: sbUser.firstName })
-    @IsNotEmpty()
+    @IsNotEmpty(toErrString(AuthErrors.USER_400_EMPTY_FNAME))
     firstName: string;
 
     @ApiProperty({ example: sbUser.lastName })
