@@ -2,10 +2,10 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty } from "class-validator";
 import { toErrString } from "hichchi-nestjs-common/converters";
 import { UserErrors } from "../responses";
-import { IVendor } from "../interfaces";
+import { ICreateVendorDto } from "../interfaces";
 import { sbRegVendor } from "../../../swagger/utils/swagger-request";
 
-export class RegisterVendorDto implements IVendor {
+export class RegisterVendorDto implements ICreateVendorDto {
     @ApiProperty({ example: sbRegVendor.vendorTypeId })
     @IsNotEmpty(toErrString(UserErrors.VENDOR_400_EMPTY_TYPE))
     vendorTypeId: string;

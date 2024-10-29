@@ -4,7 +4,7 @@ import { sbClient, sbUser, sbVendor } from "./swagger-request";
 import { faker } from "@faker-js/faker";
 import { Role } from "../../core/enums/role.enum";
 import { ViewUserDto, ViewVendorTypeDto } from "../../modules/user/dtos";
-import { IUser, IVendorType } from "../../modules/user/interfaces";
+import { IUserEntity, IVendorTypeEntity, IViewVendorTypeDto } from "../../modules/user/interfaces";
 import { UserStatus } from "../../modules/user/enums";
 
 export const srHealthCheck = { schema: { example: { status: "UP" } } };
@@ -12,12 +12,13 @@ export const srHealthCheck = { schema: { example: { status: "UP" } } };
 const viewUserDto = new ViewUserDto();
 const viewVendorTypeDto = new ViewVendorTypeDto();
 
-const user: IUser = {
+const user: IUserEntity = {
     id: faker.string.uuid(),
     ...sbUser,
     fullName: `${sbUser.firstName} ${sbUser.lastName}`,
     password: "",
     salt: "",
+    role: Role.USER,
     status: UserStatus.ACTIVE,
     client: sbClient,
     vendor: sbVendor,
@@ -25,9 +26,11 @@ const user: IUser = {
     updatedAt: new Date(),
 };
 
-const vendorType: IVendorType = {
+const vendorType: IVendorTypeEntity = {
     id: faker.string.uuid(),
     name: faker.person.jobType(),
+    icon: faker.internet.url(),
+    status: true,
     createdAt: new Date(),
     updatedAt: new Date(),
 };
@@ -52,7 +55,7 @@ export const authResponse = {
     user: srClient,
 };
 
-export const srVendorType: Partial<IVendorType> = viewVendorTypeDto.formatDataSet(vendorType);
+export const srVendorType: IViewVendorTypeDto = viewVendorTypeDto.formatDataSet(vendorType);
 
 export const srE400 = {
     schema: {

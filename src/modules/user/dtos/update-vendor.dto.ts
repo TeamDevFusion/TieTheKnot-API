@@ -1,10 +1,10 @@
 import { IsOptional } from "class-validator";
 import { ApiPropertyOptional } from "@nestjs/swagger";
-import { IUserDto, IVendor } from "../interfaces";
+import { IUpdateVendorDto } from "../interfaces";
 import { UpdateUserDto } from "./update-user.dto";
 import { sbVendor } from "../../../swagger/utils/swagger-request";
 
-export class UpdateVendorDto extends UpdateUserDto implements Partial<IUserDto>, Partial<IVendor> {
+export class UpdateVendorDto extends UpdateUserDto implements IUpdateVendorDto {
     @ApiPropertyOptional({ example: sbVendor.vendorTypeId })
     @IsOptional()
     vendorTypeId?: string;

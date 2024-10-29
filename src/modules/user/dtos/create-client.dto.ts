@@ -4,10 +4,10 @@ import { ApiProperty } from "@nestjs/swagger";
 import { CreateUserDto } from "./create-user.dto";
 import { PlanStatus } from "../enums";
 import { UserErrors } from "../responses";
-import { IClient, IUserDto } from "../interfaces";
+import { ICreateClientDto, ICreateUserDto } from "../interfaces";
 import { sbClient } from "../../../swagger/utils/swagger-request";
 
-export class CreateClientDto extends CreateUserDto implements IUserDto, IClient {
+export class CreateClientDto extends CreateUserDto implements ICreateUserDto, ICreateClientDto {
     @ApiProperty({ enum: Object.values(PlanStatus), example: PlanStatus.Planning })
     @IsEnum(PlanStatus, toErrString(UserErrors.USER_400_INVALID_PLAN_STATUS))
     @IsNotEmpty(toErrString(UserErrors.USER_400_EMPTY_PLAN_STATUS))

@@ -2,9 +2,8 @@
 import { Endpoint } from "../../../core/enums";
 import { RequestMethod } from "../enums";
 import { LogSnapshot, UserAction } from "../types";
-import { IUser, IVendorType } from "../../user/interfaces";
+import { IUserEntity, IVendorTypeEntity } from "../../user/interfaces";
 
-// TODO: ### Add other entities
 export interface IUserLogDto {
     ip?: string;
     url: string;
@@ -15,14 +14,15 @@ export interface IUserLogDto {
     exception?: any;
     sessionId?: string;
     byId?: string;
+    // TODO: ### Add id field for each entity which needs to be logged (ex: userId)
     userId?: string;
     vendorTypeId?: string;
 }
 
-// TODO: ### Add other entities
 export interface IUserLog extends IUserLogDto {
-    by?: IUser;
-    user?: IUser;
-    vendorType?: IVendorType;
+    by?: IUserEntity;
     createdAt: Date;
+    // TODO: ### Add relation field for each entity which needs to be logged (ex: user)
+    user?: IUserEntity;
+    vendorType?: IVendorTypeEntity;
 }

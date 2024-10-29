@@ -58,4 +58,5 @@ export const sbRegUser: RegisterUserDto = {
 
 export const sbVendorType = {
     name: faker.person.jobType(),
+    icon: faker.internet.url(),
 };

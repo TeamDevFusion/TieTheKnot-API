@@ -1,10 +1,10 @@
 import { IViewDto } from "hichchi-nestjs-common/interfaces";
-import { IUser, IVendorType } from "../interfaces";
+import { IUserEntity, IVendorTypeEntity, IViewVendorTypeDto } from "../interfaces";
 import { removeLogs } from "../../../core/utils/utils";
 import { ViewUserDto } from "./view-user.dto";
 
 export class ViewVendorTypeDto implements IViewDto {
-    formatDataSet(entity?: IVendorType): Partial<IVendorType> {
+    formatDataSet(entity?: IVendorTypeEntity): IViewVendorTypeDto {
         if (!entity) {
             return null;
         }
@@ -12,7 +12,7 @@ export class ViewVendorTypeDto implements IViewDto {
         const viewUserDto = new ViewUserDto();
 
         return {
-            vendors: entity.vendors?.map((vendor: IUser) => viewUserDto.formatDataSet(vendor)),
+            vendors: entity.vendors?.map((vendor: IUserEntity) => viewUserDto.formatDataSet(vendor)),
             ...removeLogs(entity),
         };
     }

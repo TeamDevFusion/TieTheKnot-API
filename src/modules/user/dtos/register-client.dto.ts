@@ -3,10 +3,10 @@ import { IsEnum, IsNotEmpty } from "class-validator";
 import { PlanStatus } from "../enums";
 import { toErrString } from "hichchi-nestjs-common/converters";
 import { UserErrors } from "../responses";
-import { IClient } from "../interfaces";
+import { ICreateClientDto } from "../interfaces";
 import { sbRegClient } from "../../../swagger/utils/swagger-request";
 
-export class RegisterClientDto implements IClient {
+export class RegisterClientDto implements ICreateClientDto {
     @ApiProperty({ enum: Object.values(PlanStatus), example: sbRegClient.planStatus })
     @IsEnum(PlanStatus, { message: "Invalid plan status" })
     @IsNotEmpty({ message: "Plan status must not be empty" })

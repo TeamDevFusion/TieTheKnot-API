@@ -3,10 +3,10 @@ import { toErrString } from "hichchi-nestjs-common/converters";
 import { ApiProperty } from "@nestjs/swagger";
 import { CreateUserDto } from "./create-user.dto";
 import { UserErrors } from "../responses";
-import { IUserDto, IVendor } from "../interfaces";
+import { ICreateUserDto, ICreateVendorDto } from "../interfaces";
 import { sbVendor } from "../../../swagger/utils/swagger-request";
 
-export class CreateVendorDto extends CreateUserDto implements IUserDto, IVendor {
+export class CreateVendorDto extends CreateUserDto implements ICreateUserDto, ICreateVendorDto {
     @ApiProperty({ example: sbVendor.vendorTypeId })
     @IsNotEmpty(toErrString(UserErrors.VENDOR_400_EMPTY_TYPE))
     vendorTypeId: string;

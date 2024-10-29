@@ -3,11 +3,11 @@ import { toErrString } from "hichchi-nestjs-common/converters";
 import { ApiPropertyOptional } from "@nestjs/swagger";
 import { PlanStatus } from "../enums";
 import { UserErrors } from "../responses";
-import { IClient, IUserDto } from "../interfaces";
+import { IUpdateClientDto } from "../interfaces";
 import { UpdateUserDto } from "./update-user.dto";
 import { sbClient } from "../../../swagger/utils/swagger-request";
 
-export class UpdateClientDto extends UpdateUserDto implements Partial<IUserDto>, Partial<IClient> {
+export class UpdateClientDto extends UpdateUserDto implements IUpdateClientDto {
     @ApiPropertyOptional({ enum: Object.values(PlanStatus), example: PlanStatus.Planning })
     @IsEnum(PlanStatus, toErrString(UserErrors.USER_400_INVALID_PLAN_STATUS))
     @IsOptional()

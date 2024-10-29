@@ -26,31 +26,6 @@ const UserErrors = {
         code: "USER_400_EMPTY_VENDOR",
         message: "Vendor details cannot be empty!",
     },
-    VENDOR_400_EMPTY_TYPE: {
-        status: 400,
-        code: "VENDOR_400_EMPTY_TYPE",
-        message: "Vendor type id cannot be empty!",
-    },
-    VENDOR_400_EMPTY_COMPANY_NAME: {
-        status: 400,
-        code: "VENDOR_400_EMPTY_COMPANY_NAME",
-        message: "Company name cannot be empty!",
-    },
-    VENDOR_400_EMPTY_ADDRESS: {
-        status: 400,
-        code: "VENDOR_400_EMPTY_ADDRESS",
-        message: "Address cannot be empty!",
-    },
-    VENDOR_400_EMPTY_CITY: {
-        status: 400,
-        code: "VENDOR_400_EMPTY_CITY",
-        message: "City cannot be empty!",
-    },
-    VENDOR_400_EMPTY_PHONE: {
-        status: 400,
-        code: "VENDOR_400_EMPTY_PHONE",
-        message: "Phone cannot be empty!",
-    },
     USER_400_EMPTY_PLANNER: {
         status: 400,
         code: "USER_400_EMPTY_PLANNER",
@@ -80,6 +55,36 @@ const UserErrors = {
         status: 400,
         code: "USER_403_UPDATE_ADMIN",
         message: "You cannot update an admin user!",
+    },
+    VENDOR_400_EMPTY_TYPE: {
+        status: 400,
+        code: "VENDOR_400_EMPTY_TYPE",
+        message: "Vendor type id cannot be empty!",
+    },
+    VENDOR_400_EMPTY_COMPANY_NAME: {
+        status: 400,
+        code: "VENDOR_400_EMPTY_COMPANY_NAME",
+        message: "Company name cannot be empty!",
+    },
+    VENDOR_400_EMPTY_ADDRESS: {
+        status: 400,
+        code: "VENDOR_400_EMPTY_ADDRESS",
+        message: "Address cannot be empty!",
+    },
+    VENDOR_400_EMPTY_CITY: {
+        status: 400,
+        code: "VENDOR_400_EMPTY_CITY",
+        message: "City cannot be empty!",
+    },
+    VENDOR_400_EMPTY_PHONE: {
+        status: 400,
+        code: "VENDOR_400_EMPTY_PHONE",
+        message: "Phone cannot be empty!",
+    },
+    VENDOR_TYPE_400_EMPTY_NAME: {
+        status: 400,
+        code: "VENDOR_TYPE_400_EMPTY_NAME",
+        message: "Name cannot be empty!",
     },
     USER_404_USER_NOT_FOUND: (role: Role): { code: string; message: string; status: number } => ({
         status: 404,

@@ -8,10 +8,14 @@ import * as process from "process";
 import { isOriginAllowed } from "hichchi-nestjs-common/utils";
 import { setupSwagger } from "./swagger/utils/swagger.core-utils";
 import { NextFunction, Request, Response } from "express";
+import { LoggerService } from "hichchi-nestjs-common/services";
 
 // eslint-disable-next-line func-style
 async function bootstrap(): Promise<void> {
-    const app = await NestFactory.create(AppModule);
+    const app = await NestFactory.create(AppModule, {
+        logger: new LoggerService(),
+    });
+
     const { httpAdapter } = app.get(HttpAdapterHost);
 
     app.useGlobalFilters(new AllExceptionsFilter(httpAdapter));

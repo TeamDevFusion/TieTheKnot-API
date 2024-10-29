@@ -20,6 +20,7 @@ export default [
             "@typescript-eslint/explicit-function-return-type": "error",
             "@typescript-eslint/no-non-null-assertion": "off",
             "@typescript-eslint/no-unused-vars": "off",
+            "@typescript-eslint/no-empty-object-type": "off",
             "prettier/prettier": [
                 "error",
                 {

@@ -1,4 +1,15 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from "@nestjs/common";
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Param,
+    Patch,
+    Post,
+    UploadedFile,
+    UseGuards,
+    UseInterceptors,
+} from "@nestjs/common";
 import { Endpoint, EntityName } from "../../../core/enums";
 import {
     ApiBadRequestResponse,
@@ -23,7 +34,7 @@ import {
     ViewVendorTypeDto,
 } from "../dtos";
 import { TokenUser } from "../../../core/types/auth.types";
-import { IUser, IVendorType } from "../interfaces";
+import { IUserEntity, IVendorTypeEntity } from "../interfaces";
 import { AdminCan } from "../enums";
 import { UserService, VendorTypeService } from "../services";
 import { IPagination, IStatusResponse } from "hichchi-nestjs-common/interfaces";
@@ -46,6 +57,8 @@ import {
 } from "../../../swagger/utils/swagger-responses";
 import { UseUserLogInterceptor } from "../../app-config/decorators";
 import { ParamType } from "../../app-config/enums";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { MulterFile } from "../../file-upload/file-upload.types";
 
 @Controller(Endpoint.USER)
 @ApiTags("User")
@@ -65,7 +78,7 @@ export class UserController {
     @ApiDocs("Get a user by ID", srAdmin, paramId)
     @UseUserLogInterceptor(AdminCan.USER_GET, ParamType.PATH, "id")
     @UseTransformInterceptor(new ViewUserDto())
-    getAdmin(@Param("id") id: string): Promise<IUser> {
+    getAdmin(@Param("id") id: string): Promise<IUserEntity> {
         return this.userService.getUser(id, Role.ADMIN);
     }
 
@@ -75,16 +88,16 @@ export class UserController {
     @UseTransformInterceptor(new ViewUserDto())
     async getUsers(
         @Pager() pagination?: IPagination,
-        @Sorter() sort?: SortOptions<IUser>,
-        @Search() search?: QuerySafeDeepPartial<IUser>,
-        @Filters() filters?: QuerySafeDeepPartial<IUser>,
-    ): Promise<PaginatedResponse<IUser> | IUser[]> {
+        @Sorter() sort?: SortOptions<IUserEntity>,
+        @Search() search?: QuerySafeDeepPartial<IUserEntity>,
+        @Filters() filters?: QuerySafeDeepPartial<IUserEntity>,
+    ): Promise<PaginatedResponse<IUserEntity> | IUserEntity[]> {
         return (await this.userService.getMany({
             pagination,
             sort,
             search,
             filters,
-        })) as unknown as PaginatedResponse<IUser> | IUser[];
+        })) as unknown as PaginatedResponse<IUserEntity> | IUserEntity[];
     }
 
     @Post("admin")
@@ -92,7 +105,7 @@ export class UserController {
     @ApiDocs("Create a new admin", srAdmin)
     @UseUserLogInterceptor(AdminCan.USER_CREATE, ParamType.RESPONSE, "id")
     @UseTransformInterceptor(new ViewUserDto())
-    createAdmin(@CurrentUser() user: TokenUser, @Body() dto: CreateUserDto): Promise<IUser> {
+    createAdmin(@CurrentUser() user: TokenUser, @Body() dto: CreateUserDto): Promise<IUserEntity> {
         return this.userService.createUser(dto, Role.ADMIN, user);
     }
 
@@ -101,7 +114,11 @@ export class UserController {
     @ApiDocs("Update a admin user", srAdmin, paramId)
     @UseUserLogInterceptor(AdminCan.USER_UPDATE, ParamType.PATH, "id")
     @UseTransformInterceptor(new ViewUserDto())
-    updateAdmin(@CurrentUser() user: TokenUser, @Param("id") id: string, @Body() dto: UpdateUserDto): Promise<IUser> {
+    updateAdmin(
+        @CurrentUser() user: TokenUser,
+        @Param("id") id: string,
+        @Body() dto: UpdateUserDto,
+    ): Promise<IUserEntity> {
         return this.userService.updateUser(id, dto, Role.ADMIN, user);
     }
 
@@ -110,7 +127,7 @@ export class UserController {
     @ApiDocs("Delete a user", srAdmin, paramId)
     @UseUserLogInterceptor(AdminCan.USER_DELETE, ParamType.PATH, "id")
     @UseTransformInterceptor(new ViewUserDto())
-    deleteAdmin(@CurrentUser() user: TokenUser, @Param("id") id: string): Promise<IUser> {
+    deleteAdmin(@CurrentUser() user: TokenUser, @Param("id") id: string): Promise<IUserEntity> {
         return this.userService.deleteUser(id, Role.ADMIN, user);
     }
 
@@ -127,7 +144,7 @@ export class UserController {
     @ApiDocs("Get a user by ID", srClient, paramId)
     @UseUserLogInterceptor(AdminCan.USER_GET, ParamType.PATH, "id")
     @UseTransformInterceptor(new ViewUserDto())
-    getClient(@Param("id") id: string): Promise<IUser> {
+    getClient(@Param("id") id: string): Promise<IUserEntity> {
         return this.userService.getUser(id, Role.USER);
     }
 
@@ -137,17 +154,17 @@ export class UserController {
     @UseTransformInterceptor(new ViewUserDto())
     async getClients(
         @Pager() pagination?: IPagination,
-        @Sorter() sort?: SortOptions<IUser>,
-        @Search() search?: QuerySafeDeepPartial<IUser>,
-        @Filters() filters?: QuerySafeDeepPartial<IUser>,
-    ): Promise<PaginatedResponse<IUser> | IUser[]> {
+        @Sorter() sort?: SortOptions<IUserEntity>,
+        @Search() search?: QuerySafeDeepPartial<IUserEntity>,
+        @Filters() filters?: QuerySafeDeepPartial<IUserEntity>,
+    ): Promise<PaginatedResponse<IUserEntity> | IUserEntity[]> {
         filters.role = Role.USER;
         return (await this.userService.getMany({
             pagination,
             sort,
             search,
             filters,
-        })) as unknown as PaginatedResponse<IUser> | IUser[];
+        })) as unknown as PaginatedResponse<IUserEntity> | IUserEntity[];
     }
 
     @Post("client")
@@ -155,7 +172,7 @@ export class UserController {
     @ApiDocs("Create a new client", srClient)
     @UseUserLogInterceptor(AdminCan.USER_CREATE, ParamType.RESPONSE, "id")
     @UseTransformInterceptor(new ViewUserDto())
-    createClient(@CurrentUser() user: TokenUser, @Body() dto: CreateClientDto): Promise<IUser> {
+    createClient(@CurrentUser() user: TokenUser, @Body() dto: CreateClientDto): Promise<IUserEntity> {
         return this.userService.createUser(dto, Role.USER, user);
     }
 
@@ -168,7 +185,7 @@ export class UserController {
         @CurrentUser() user: TokenUser,
         @Param("id") id: string,
         @Body() dto: UpdateClientDto,
-    ): Promise<IUser> {
+    ): Promise<IUserEntity> {
         return this.userService.updateUser(id, dto, Role.USER, user);
     }
 
@@ -177,7 +194,7 @@ export class UserController {
     @ApiDocs("Delete a user", srClient, paramId)
     @UseUserLogInterceptor(AdminCan.USER_DELETE, ParamType.PATH, "id")
     @UseTransformInterceptor(new ViewUserDto())
-    deleteClient(@CurrentUser() user: TokenUser, @Param("id") id: string): Promise<IUser> {
+    deleteClient(@CurrentUser() user: TokenUser, @Param("id") id: string): Promise<IUserEntity> {
         return this.userService.deleteUser(id, Role.USER, user);
     }
 
@@ -194,7 +211,7 @@ export class UserController {
     @ApiDocs("Get a user by ID", srVendor, paramId)
     @UseUserLogInterceptor(AdminCan.USER_GET, ParamType.PATH, "id")
     @UseTransformInterceptor(new ViewUserDto())
-    getVendor(@Param("id") id: string): Promise<IUser> {
+    getVendor(@Param("id") id: string): Promise<IUserEntity> {
         return this.userService.getUser(id, Role.VENDOR);
     }
 
@@ -204,10 +221,10 @@ export class UserController {
     @UseTransformInterceptor(new ViewUserDto())
     async getVendors(
         @Pager() pagination?: IPagination,
-        @Sorter() sort?: SortOptions<IUser>,
-        @Search() search?: QuerySafeDeepPartial<IUser>,
-        @Filters() filters?: QuerySafeDeepPartial<IUser>,
-    ): Promise<PaginatedResponse<IUser> | IUser[]> {
+        @Sorter() sort?: SortOptions<IUserEntity>,
+        @Search() search?: QuerySafeDeepPartial<IUserEntity>,
+        @Filters() filters?: QuerySafeDeepPartial<IUserEntity>,
+    ): Promise<PaginatedResponse<IUserEntity> | IUserEntity[]> {
         filters.role = Role.VENDOR;
         return (await this.userService.getMany({
             pagination,
@@ -215,7 +232,7 @@ export class UserController {
             search,
             filters,
             relations: ["vendorType"],
-        })) as unknown as PaginatedResponse<IUser> | IUser[];
+        })) as unknown as PaginatedResponse<IUserEntity> | IUserEntity[];
     }
 
     @Post("vendor")
@@ -223,7 +240,7 @@ export class UserController {
     @ApiDocs("Create a new vendor", srVendor)
     @UseUserLogInterceptor(AdminCan.USER_CREATE, ParamType.RESPONSE, "id")
     @UseTransformInterceptor(new ViewUserDto())
-    createVendor(@CurrentUser() user: TokenUser, @Body() dto: CreateVendorDto): Promise<IUser> {
+    createVendor(@CurrentUser() user: TokenUser, @Body() dto: CreateVendorDto): Promise<IUserEntity> {
         return this.userService.createUser(dto, Role.VENDOR, user);
     }
 
@@ -236,7 +253,7 @@ export class UserController {
         @CurrentUser() user: TokenUser,
         @Param("id") id: string,
         @Body() dto: UpdateVendorDto,
-    ): Promise<IUser> {
+    ): Promise<IUserEntity> {
         return this.userService.updateUser(id, dto, Role.VENDOR, user);
     }
 
@@ -245,7 +262,7 @@ export class UserController {
     @ApiDocs("Delete a user", srVendor, paramId)
     @UseUserLogInterceptor(AdminCan.USER_DELETE, ParamType.PATH, "id")
     @UseTransformInterceptor(new ViewUserDto())
-    deleteVendor(@CurrentUser() user: TokenUser, @Param("id") id: string): Promise<IUser> {
+    deleteVendor(@CurrentUser() user: TokenUser, @Param("id") id: string): Promise<IUserEntity> {
         return this.userService.deleteUser(id, Role.VENDOR, user);
     }
 
@@ -262,7 +279,7 @@ export class UserController {
     @ApiDocs("Get a user by ID", srVendor, paramId)
     @UseUserLogInterceptor(AdminCan.USER_GET, ParamType.PATH, "id")
     @UseTransformInterceptor(new ViewUserDto())
-    getUser(@Param("id") id: string): Promise<IUser> {
+    getUser(@Param("id") id: string): Promise<IUserEntity> {
         return this.userService.getUser(id, Role.PLANNER);
     }
 
@@ -272,17 +289,17 @@ export class UserController {
     @UseTransformInterceptor(new ViewUserDto())
     async getPlanners(
         @Pager() pagination?: IPagination,
-        @Sorter() sort?: SortOptions<IUser>,
-        @Search() search?: QuerySafeDeepPartial<IUser>,
-        @Filters() filters?: QuerySafeDeepPartial<IUser>,
-    ): Promise<PaginatedResponse<IUser> | IUser[]> {
+        @Sorter() sort?: SortOptions<IUserEntity>,
+        @Search() search?: QuerySafeDeepPartial<IUserEntity>,
+        @Filters() filters?: QuerySafeDeepPartial<IUserEntity>,
+    ): Promise<PaginatedResponse<IUserEntity> | IUserEntity[]> {
         filters.role = Role.PLANNER;
         return (await this.userService.getMany({
             pagination,
             sort,
             search,
             filters,
-        })) as unknown as PaginatedResponse<IUser> | IUser[];
+        })) as unknown as PaginatedResponse<IUserEntity> | IUserEntity[];
     }
 
     @Post("planner")
@@ -290,7 +307,7 @@ export class UserController {
     @ApiDocs("Create a new planner", srVendor)
     @UseUserLogInterceptor(AdminCan.USER_CREATE, ParamType.RESPONSE, "id")
     @UseTransformInterceptor(new ViewUserDto())
-    createPlanner(@CurrentUser() user: TokenUser, @Body() dto: CreateUserDto): Promise<IUser> {
+    createPlanner(@CurrentUser() user: TokenUser, @Body() dto: CreateUserDto): Promise<IUserEntity> {
         return this.userService.createUser(dto, Role.PLANNER, user);
     }
 
@@ -299,7 +316,11 @@ export class UserController {
     @ApiDocs("Update a vendor", srVendor, paramId)
     @UseUserLogInterceptor(AdminCan.USER_UPDATE, ParamType.PATH, "id")
     @UseTransformInterceptor(new ViewUserDto())
-    updatePlanner(@CurrentUser() user: TokenUser, @Param("id") id: string, @Body() dto: UpdateUserDto): Promise<IUser> {
+    updatePlanner(
+        @CurrentUser() user: TokenUser,
+        @Param("id") id: string,
+        @Body() dto: UpdateUserDto,
+    ): Promise<IUserEntity> {
         return this.userService.updateUser(id, dto, Role.PLANNER, user);
     }
 
@@ -308,7 +329,7 @@ export class UserController {
     @ApiDocs("Delete a user", srVendor, paramId)
     @UseUserLogInterceptor(AdminCan.USER_DELETE, ParamType.PATH, "id")
     @UseTransformInterceptor(new ViewUserDto())
-    deletePlanner(@CurrentUser() user: TokenUser, @Param("id") id: string): Promise<IUser> {
+    deletePlanner(@CurrentUser() user: TokenUser, @Param("id") id: string): Promise<IUserEntity> {
         return this.userService.deleteUser(id, Role.PLANNER, user);
     }
 
@@ -324,7 +345,7 @@ export class UserController {
     @ApiDocs("Get a vendor type by ID", srVendorType, paramId)
     @UseUserLogInterceptor(AdminCan.VENDOR_TYPE_GET, ParamType.PATH, "id")
     @UseTransformInterceptor(new ViewVendorTypeDto())
-    getVendorType(@Param("id") id: string): Promise<IVendorType> {
+    getVendorType(@Param("id") id: string): Promise<IVendorTypeEntity> {
         return this.vendorTypeService.get(id);
     }
 
@@ -333,16 +354,16 @@ export class UserController {
     @UseTransformInterceptor(new ViewVendorTypeDto())
     async getVendorTypes(
         @Pager() pagination?: IPagination,
-        @Sorter() sort?: SortOptions<IVendorType>,
-        @Search() search?: QuerySafeDeepPartial<IVendorType>,
-        @Filters() filters?: QuerySafeDeepPartial<IVendorType>,
-    ): Promise<PaginatedResponse<IVendorType> | IVendorType[]> {
+        @Sorter() sort?: SortOptions<IVendorTypeEntity>,
+        @Search() search?: QuerySafeDeepPartial<IVendorTypeEntity>,
+        @Filters() filters?: QuerySafeDeepPartial<IVendorTypeEntity>,
+    ): Promise<PaginatedResponse<IVendorTypeEntity> | IVendorTypeEntity[]> {
         return (await this.vendorTypeService.getMany({
             pagination,
             sort,
             search,
             filters,
-        })) as unknown as PaginatedResponse<IVendorType> | IVendorType[];
+        })) as unknown as PaginatedResponse<IVendorTypeEntity> | IVendorTypeEntity[];
     }
 
     @Post("vendor-type")
@@ -350,8 +371,13 @@ export class UserController {
     @ApiDocs("Create a new vendor type", srVendorType)
     @UseUserLogInterceptor(AdminCan.VENDOR_TYPE_CREATE, ParamType.RESPONSE, "id")
     @UseTransformInterceptor(new ViewVendorTypeDto())
-    createVendorType(@CurrentUser() user: TokenUser, @Body() dto: CreateVendorTypeDto): Promise<IVendorType> {
-        return this.vendorTypeService.save(dto, undefined, user);
+    @UseInterceptors(FileInterceptor("icon"))
+    createVendorType(
+        @CurrentUser() user: TokenUser,
+        @Body() dto: CreateVendorTypeDto,
+        @UploadedFile() icon?: MulterFile,
+    ): Promise<IVendorTypeEntity> {
+        return this.vendorTypeService.saveVendorType(dto, user, icon);
     }
 
     @Patch("vendor-type/:id")
@@ -359,12 +385,14 @@ export class UserController {
     @ApiDocs("Update a vendor type", srVendorType, paramId)
     @UseUserLogInterceptor(AdminCan.VENDOR_TYPE_UPDATE, ParamType.PATH, "id")
     @UseTransformInterceptor(new ViewVendorTypeDto())
+    @UseInterceptors(FileInterceptor("icon"))
     updateVendorType(
         @CurrentUser() user: TokenUser,
         @Param("id") id: string,
         @Body() dto: UpdateVendorTypeDto,
-    ): Promise<IVendorType> {
-        return this.vendorTypeService.update(id, dto, undefined, user);
+        @UploadedFile() icon?: MulterFile,
+    ): Promise<IVendorTypeEntity> {
+        return this.vendorTypeService.updateVendorType(id, dto, user, icon);
     }
 
     @Delete("vendor-type/:id")
@@ -372,8 +400,8 @@ export class UserController {
     @ApiDocs("Delete a vendor type", srVendorType, paramId)
     @UseUserLogInterceptor(AdminCan.VENDOR_TYPE_DELETE, ParamType.PATH, "id")
     @UseTransformInterceptor(new ViewVendorTypeDto())
-    deleteVendorType(@CurrentUser() user: TokenUser, @Param("id") id: string): Promise<IVendorType> {
-        return this.vendorTypeService.delete(id, user);
+    deleteVendorType(@CurrentUser() user: TokenUser, @Param("id") id: string): Promise<IVendorTypeEntity> {
+        return this.vendorTypeService.deleteVendorType(id, user);
     }
 
     @Post("vendor-type/delete")
@@ -381,6 +409,6 @@ export class UserController {
     @ApiDocs("Delete multiple vendor types", srDeleted(EntityName.VENDOR_TYPE))
     @UseUserLogInterceptor(AdminCan.VENDOR_TYPE_DELETE, ParamType.BODY, "ids")
     deleteVendorTypes(@CurrentUser() user: TokenUser, @Body() { ids }: BulkDeleteDto): Promise<IStatusResponse> {
-        return this.vendorTypeService.deleteByIds(ids, user);
+        return this.vendorTypeService.deleteVendorByIds(ids, user);
     }
 }

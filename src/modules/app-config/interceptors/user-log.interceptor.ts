@@ -86,7 +86,7 @@ export const UserLogInterceptor = (
 
         fillRelationId(userLog: IUserLogDto, id?: string): IUserLogDto {
             switch (EntityMeta[action.split("_").shift()]) {
-                // TODO: ### Add other entities
+                // TODO: ### Add one case for each entity which needs to be logged
                 case EntityName.USER:
                     userLog.userId = id || userLog.snapshot?.[paramType]?.[field];
                     break;

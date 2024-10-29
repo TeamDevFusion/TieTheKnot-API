@@ -1,18 +1,18 @@
-import { BeforeInsert, BeforeUpdate, Column, Entity, ManyToOne, OneToMany, Unique } from "typeorm";
+import { BeforeInsert, BeforeUpdate, Column, Entity, JoinColumn, ManyToOne, OneToMany, Unique } from "typeorm";
 import { Exclude } from "class-transformer";
-import { EntityName, UNIQUEConstraint } from "../../../core/enums";
+import { EntityName, FKConstraint, UNIQUEConstraint } from "../../../core/enums";
 import { UserStatus } from "../enums";
-import { IClient, IPlanner, IUser, IVendor } from "../interfaces";
+import { ICreateClientDto, ICreatePlannerDto, IUserEntity, ICreateVendorDto } from "../interfaces";
 import { Role } from "../../../core/enums/role.enum";
 import { VendorTypeEntity } from "./vendor-type.entity";
 import { UserLogEntity } from "../../app-config/entities";
 import { BaseEntityTemplate } from "hichchi-nestjs-crud";
-import { IUserEntity } from "hichchi-nestjs-common/interfaces";
+import { IUserEntity as IUserEntityImpl } from "hichchi-nestjs-common/interfaces";
 
 @Entity(EntityName.USER)
 @Unique(UNIQUEConstraint.USER_EMAIL, ["email"])
 @Unique(UNIQUEConstraint.USER_PHONE, ["phone"])
-export class UserEntity extends BaseEntityTemplate implements IUser {
+export class UserEntity extends BaseEntityTemplate implements IUserEntity {
     @Column()
     firstName: string;
 
@@ -43,31 +43,32 @@ export class UserEntity extends BaseEntityTemplate implements IUser {
     role: Role;
 
     @Column({ type: "json", nullable: true })
-    client?: IClient;
+    client?: ICreateClientDto;
 
     @Column({ type: "json", nullable: true })
-    vendor?: IVendor;
+    vendor?: ICreateVendorDto;
 
     @Column({ type: "json", nullable: true })
-    planner?: IPlanner;
+    planner?: ICreatePlannerDto;
 
     @Column({ nullable: true })
     vendorTypeId?: string;
 
     @ManyToOne(() => VendorTypeEntity, vendorType => vendorType.vendors)
+    @JoinColumn({ foreignKeyConstraintName: FKConstraint.USER_VENDOR_TYPE })
     vendorType?: VendorTypeEntity;
 
     @OneToMany(() => UserLogEntity, log => log.user)
     logs?: UserLogEntity[];
 
     @ManyToOne(() => UserEntity, { nullable: true })
-    createdBy?: IUserEntity;
+    createdBy?: IUserEntityImpl;
 
     @ManyToOne(() => UserEntity, { nullable: true })
-    updatedBy?: IUserEntity;
+    updatedBy?: IUserEntityImpl;
 
     @ManyToOne(() => UserEntity, { nullable: true })
-    deletedBy?: IUserEntity;
+    deletedBy?: IUserEntityImpl;
 
     @BeforeInsert()
     @BeforeUpdate()

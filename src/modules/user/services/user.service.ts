@@ -14,7 +14,7 @@ import {
 import { EmailService } from "../../email";
 import { UserStatus } from "../enums";
 import { UserRepository } from "../repositories";
-import { IClient, IUser, IVendor } from "../interfaces";
+import { ICreateClientDto, IUserEntity, ICreateVendorDto } from "../interfaces";
 import { Role } from "../../../core/enums/role.enum";
 import { TokenUser } from "../../../core/types/auth.types";
 import { UserErrors } from "../responses";
@@ -30,7 +30,7 @@ export class UserService extends CrudService<UserEntity> implements IUserService
         super(userRepository, "user", "email");
     }
 
-    registerUser(registerUserDto: RegisterUserDto): Promise<IUser> {
+    registerUser(registerUserDto: RegisterUserDto): Promise<IUserEntity> {
         return this.transaction(async (): Promise<UserEntity> => {
             const user = await super.save({ ...registerUserDto, role: Role.USER, username: registerUserDto.email });
             await this.emailService.sendWelcomeMail({ email: registerUserDto.email });
@@ -38,7 +38,7 @@ export class UserService extends CrudService<UserEntity> implements IUserService
         });
     }
 
-    async getUserById(id: string): Promise<IUser | undefined> {
+    async getUserById(id: string): Promise<IUserEntity | undefined> {
         try {
             return await super.get(id);
         } catch (e) {
@@ -46,7 +46,7 @@ export class UserService extends CrudService<UserEntity> implements IUserService
         }
     }
 
-    async getUserByEmail(email: string): Promise<IUser | undefined> {
+    async getUserByEmail(email: string): Promise<IUserEntity | undefined> {
         try {
             return await super.getOne({ where: { email } });
         } catch (e) {
@@ -54,26 +54,30 @@ export class UserService extends CrudService<UserEntity> implements IUserService
         }
     }
 
-    async updateUserById(id: string, userDto: IUser, updatedBy: IUser): Promise<IUser> {
+    async updateUserById(id: string, userDto: IUserEntity, updatedBy: IUserEntity): Promise<IUserEntity> {
         const { role, ...dto } = userDto;
         return await super.update(id, dto, undefined, updatedBy);
     }
 
-    getUser(id: string, role: Role): Promise<IUser> {
+    getUser(id: string, role: Role): Promise<IUserEntity> {
         return this.getOne({ where: { id, role }, relations: ["vendorType"] });
     }
 
-    createUser(dto: CreateUserDto | CreateClientDto | CreateVendorDto, role: Role, createdBy: IUser): Promise<IUser> {
+    createUser(
+        dto: CreateUserDto | CreateClientDto | CreateVendorDto,
+        role: Role,
+        createdBy: IUserEntity,
+    ): Promise<IUserEntity> {
         const rawPassword = configuration().app.defaultPassword;
         const { password, salt } = AuthService.generatePassword(rawPassword);
 
-        const client: IClient = {
+        const client: ICreateClientDto = {
             planStatus: (dto as CreateClientDto).planStatus,
             partnerFirstName: (dto as CreateClientDto).partnerFirstName,
             partnerLastName: (dto as CreateClientDto).partnerLastName,
         };
 
-        const vendor: IVendor = {
+        const vendor: ICreateVendorDto = {
             vendorTypeId: (dto as CreateVendorDto).vendorTypeId,
             companyName: (dto as CreateVendorDto).companyName,
             address: (dto as CreateVendorDto).address,
@@ -106,20 +110,20 @@ export class UserService extends CrudService<UserEntity> implements IUserService
         dto: UpdateUserDto | UpdateClientDto | UpdateVendorDto,
         role: Role,
         updatedBy: TokenUser,
-    ): Promise<IUser> {
+    ): Promise<IUserEntity> {
         const user = await this.get(id);
 
         if (user.role !== role) {
             throw new NotFoundException(UserErrors.USER_404_USER_NOT_FOUND(role));
         }
 
-        const client: IClient = {
+        const client: ICreateClientDto = {
             planStatus: (dto as UpdateClientDto).planStatus || user.client?.planStatus,
             partnerFirstName: (dto as UpdateClientDto).partnerFirstName || user.client?.partnerFirstName,
             partnerLastName: (dto as UpdateClientDto).partnerLastName || user.client?.partnerLastName,
         };
 
-        const vendor: IVendor = {
+        const vendor: ICreateVendorDto = {
             vendorTypeId: (dto as UpdateVendorDto).vendorTypeId || user.vendor?.vendorTypeId,
             companyName: (dto as UpdateVendorDto).companyName || user.vendor?.companyName,
             address: (dto as UpdateVendorDto).address || user.vendor?.address,
@@ -140,7 +144,7 @@ export class UserService extends CrudService<UserEntity> implements IUserService
         );
     }
 
-    async deleteUser(id: string, role: Role, deletedBy: TokenUser): Promise<IUser> {
+    async deleteUser(id: string, role: Role, deletedBy: TokenUser): Promise<IUserEntity> {
         const user = await this.get(id);
 
         if (user.role !== role) {

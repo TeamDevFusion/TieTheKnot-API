@@ -1,15 +1,18 @@
 import { IViewDto } from "hichchi-nestjs-common/interfaces";
-import { IUser, IVewUserDto } from "../interfaces";
+import { IUserEntity, IViewUserDto } from "../interfaces";
 import { Role } from "../../../core/enums/role.enum";
 import { removeLogs } from "../../../core/utils/utils";
+import { ViewVendorTypeDto } from "./view-vendor-type.dto";
 
 export class ViewUserDto implements IViewDto {
-    formatDataSet(entity?: IUser): IVewUserDto {
+    formatDataSet(entity?: IUserEntity): IViewUserDto {
         if (!entity) {
             return null;
         }
 
-        const user: IVewUserDto = {
+        const viewVendorTypeDto = new ViewVendorTypeDto();
+
+        const user: IViewUserDto = {
             ...entity,
         };
 
@@ -24,12 +27,14 @@ export class ViewUserDto implements IViewDto {
             user.address = entity.vendor?.address;
             user.city = entity.vendor?.city;
             user.phone = entity.vendor?.phone;
+            user.vendorTypeId = entity.vendor?.vendorTypeId;
+            user.vendorType = viewVendorTypeDto.formatDataSet(entity?.vendorType);
         }
 
         delete user.client;
         delete user.vendor;
-        delete user.password;
-        delete user.salt;
+        delete (user as IUserEntity).password;
+        delete (user as IUserEntity).salt;
 
         return removeLogs(user);
     }

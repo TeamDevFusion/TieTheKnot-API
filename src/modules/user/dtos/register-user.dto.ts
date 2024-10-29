@@ -8,10 +8,10 @@ import { RegisterClientDto } from "./register-client.dto";
 import { RegisterVendorDto } from "./register-vendor.dto";
 import { PlannerRegisterDto } from "./planner-register.dto";
 import { Type } from "class-transformer";
-import { IUser } from "../interfaces";
+import { IRegisterUserDto } from "../interfaces";
 import { sbRegUser } from "../../../swagger/utils/swagger-request";
 
-export class RegisterUserDto extends RegisterDto implements Partial<IUser> {
+export class RegisterUserDto extends RegisterDto implements IRegisterUserDto {
     @ApiPropertyOptional({ enum: Object.values(Role).slice(1, 3), example: sbRegUser.role })
     @IsEnum(Object.values(Role).slice(1, 3), toErrString(UserErrors.USER_400_INVALID_ROLE))
     @IsNotEmpty(toErrString(UserErrors.USER_400_EMPTY_ROLE))
