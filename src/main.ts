@@ -33,7 +33,7 @@ async function bootstrap(): Promise<void> {
     app.setGlobalPrefix(`${configuration().app.version}`);
 
     app.use("/", (req: Request, res: Response, next: NextFunction) => {
-        if (req.method === "HEAD" && req.path === "/") {
+        if ((req.method === "GET" || req.method === "HEAD") && req.path === "/") {
             return res.status(200).send("OK");
         }
         next();
