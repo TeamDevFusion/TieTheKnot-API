@@ -1,33 +1,32 @@
 import "reflect-metadata";
 import { faker } from "@faker-js/faker";
-import {
-    CreateClientDto,
-    CreateUserDto,
-    CreateVendorDto,
-    RegisterClientDto,
-    RegisterUserDto,
-    RegisterVendorDto,
-} from "../../modules/user/dtos";
 import { PlanStatus } from "../../modules/user/enums";
-import { Role } from "../../core/enums/role.enum";
+import { Role } from "../../core/enums";
+import {
+    ICreateClientDto,
+    ICreateUserDto,
+    ICreateVendorDto,
+    ICreateVendorTypeDto,
+    IRegisterUserDto,
+} from "../../modules/user/interfaces";
 
 const firstName = faker.person.firstName();
 const lastName = faker.person.lastName();
 const password = faker.internet.password();
 
-export const sbUser: CreateUserDto = {
+export const sbUser: ICreateUserDto = {
     firstName,
     lastName,
     email: faker.internet.email({ firstName, lastName }).toLowerCase(),
 };
 
-export const sbRegClient: RegisterClientDto = {
+export const sbRegClient: ICreateClientDto = {
     planStatus: "planning" as PlanStatus,
     partnerFirstName: faker.person.firstName(),
     partnerLastName: faker.person.lastName(),
 };
 
-export const sbRegVendor: RegisterVendorDto = {
+export const sbRegVendor: ICreateVendorDto = {
     vendorTypeId: faker.string.uuid(),
     companyName: faker.company.name(),
     address: faker.location.streetAddress(),
@@ -35,17 +34,17 @@ export const sbRegVendor: RegisterVendorDto = {
     phone: faker.phone.number(),
 };
 
-export const sbClient: CreateClientDto = {
+export const sbClient: ICreateClientDto = {
     ...sbUser,
     ...sbRegClient,
 };
 
-export const sbVendor: CreateVendorDto = {
+export const sbVendor: ICreateVendorDto = {
     ...sbUser,
     ...sbRegVendor,
 };
 
-export const sbRegUser: RegisterUserDto = {
+export const sbRegUser: IRegisterUserDto = {
     role: Role.USER,
     firstName,
     lastName,
@@ -56,7 +55,9 @@ export const sbRegUser: RegisterUserDto = {
     planner: {},
 };
 
-export const sbVendorType = {
-    name: faker.person.jobType(),
+const vendorName = faker.person.jobType();
+export const sbVendorType: ICreateVendorTypeDto = {
+    name: vendorName,
+    label: vendorName,
     icon: faker.internet.url(),
 };

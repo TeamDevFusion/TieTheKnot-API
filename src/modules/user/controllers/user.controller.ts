@@ -10,7 +10,7 @@ import {
     UseGuards,
     UseInterceptors,
 } from "@nestjs/common";
-import { Endpoint, EntityName } from "../../../core/enums";
+import { Endpoint, EntityName, Role } from "../../../core/enums";
 import {
     ApiBadRequestResponse,
     ApiBearerAuth,
@@ -20,7 +20,6 @@ import {
 } from "@nestjs/swagger";
 import { JwtAuthGuard, RoleGuard } from "hichchi-nestjs-auth/auth/guards";
 import { CurrentUser, Roles } from "hichchi-nestjs-auth/auth/decorators";
-import { Role } from "../../../core/enums/role.enum";
 import {
     CreateClientDto,
     CreateUserDto,

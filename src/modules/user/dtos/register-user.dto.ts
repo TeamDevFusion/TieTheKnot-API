@@ -1,7 +1,7 @@
 import { IsEnum, IsNotEmpty, IsNotEmptyObject, ValidateIf, ValidateNested } from "class-validator";
 import { AuthErrors, RegisterDto } from "hichchi-nestjs-auth";
 import { toErrString } from "hichchi-nestjs-common/converters";
-import { Role } from "../../../core/enums/role.enum";
+import { Role } from "../../../core/enums";
 import { UserErrors } from "../responses";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { RegisterClientDto } from "./register-client.dto";

@@ -5,7 +5,7 @@ import {
     ResponsesObject,
     SchemaObject,
 } from "@nestjs/swagger/dist/interfaces/open-api-spec.interface";
-import { Role } from "../../core/enums/role.enum";
+import { Role } from "../../core/enums";
 import configuration from "../../core/configs/configuration";
 import { INestApplication } from "@nestjs/common";
 import { authResponse, srClient, srE400, srE401 } from "./swagger-responses";

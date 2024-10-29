@@ -1,13 +1,14 @@
 import { UserStatus } from "../enums";
 import { IUserEntity as IUserEntityImpl } from "hichchi-nestjs-common/interfaces";
 import { IBaseEntity } from "hichchi-nestjs-crud";
-import { Role } from "../../../core/enums/role.enum";
+import { Role } from "../../../core/enums";
 import { IUserLog } from "../../app-config/interfaces";
 import { IVendorTypeEntity, IViewVendorTypeDto } from "./vendor-type.interfaces";
 
 export interface ICreateUserDto {
     firstName: string;
     lastName: string;
+    email: string;
 }
 
 export interface IUpdateUserDto {
@@ -51,7 +52,6 @@ export interface IUpdatePlannerDto {}
 
 export interface IRegisterUserDto extends ICreateUserDto {
     role: Role;
-    email: string;
     password: string;
     client?: ICreateClientDto;
     vendor?: ICreateVendorDto;

@@ -1,10 +1,9 @@
 import { Controller, Get, Res, StreamableFile, UseGuards } from "@nestjs/common";
-import { Endpoint } from "../../../core/enums";
+import { Endpoint, Role } from "../../../core/enums";
 import { JwtAuthGuard, RoleGuard } from "hichchi-nestjs-auth/auth/guards";
 import { UserLogService } from "../services";
 import { UserLogEntity } from "../entities";
 import { Roles } from "hichchi-nestjs-auth/auth/decorators";
-import { Role } from "../../../core/enums/role.enum";
 import {
     ApiBadRequestResponse,
     ApiBearerAuth,

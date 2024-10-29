@@ -2,7 +2,7 @@
 
 import { sbClient, sbUser, sbVendor } from "./swagger-request";
 import { faker } from "@faker-js/faker";
-import { Role } from "../../core/enums/role.enum";
+import { Role } from "../../core/enums";
 import { ViewUserDto, ViewVendorTypeDto } from "../../modules/user/dtos";
 import { IUserEntity, IVendorTypeEntity, IViewVendorTypeDto } from "../../modules/user/interfaces";
 import { UserStatus } from "../../modules/user/enums";
@@ -26,9 +26,11 @@ const user: IUserEntity = {
     updatedAt: new Date(),
 };
 
+const vendorName = faker.person.jobType();
 const vendorType: IVendorTypeEntity = {
     id: faker.string.uuid(),
-    name: faker.person.jobType(),
+    name: vendorName,
+    label: vendorName,
     icon: faker.internet.url(),
     status: true,
     createdAt: new Date(),

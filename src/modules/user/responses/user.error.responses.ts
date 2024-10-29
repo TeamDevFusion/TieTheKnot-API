@@ -1,4 +1,4 @@
-import { Role } from "../../../core/enums/role.enum";
+import { Role } from "../../../core/enums";
 
 const UserErrors = {
     USER_400_EMPTY_CLIENT: {

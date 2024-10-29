@@ -15,7 +15,7 @@ import { EmailService } from "../../email";
 import { UserStatus } from "../enums";
 import { UserRepository } from "../repositories";
 import { ICreateClientDto, IUserEntity, ICreateVendorDto } from "../interfaces";
-import { Role } from "../../../core/enums/role.enum";
+import { Role } from "../../../core/enums";
 import { TokenUser } from "../../../core/types/auth.types";
 import { UserErrors } from "../responses";
 import { IStatusResponse } from "hichchi-nestjs-common/interfaces";

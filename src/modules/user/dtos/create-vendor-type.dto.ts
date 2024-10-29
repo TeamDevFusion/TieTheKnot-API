@@ -12,8 +12,12 @@ export class CreateVendorTypeDto implements ICreateVendorTypeDto {
     @IsNotEmpty(toErrString(UserErrors.VENDOR_TYPE_400_EMPTY_NAME))
     name: string;
 
+    @ApiProperty({ example: sbVendorType.label })
+    @IsOptional()
+    label?: string;
+
     @ApiProperty({ example: sbVendorType.icon })
     @Transform(FileOrTextFormFieldTransformer)
-    @IsOptional(toErrString(UserErrors.USER_400_EMPTY_PARTNER_FNAME))
+    @IsOptional()
     icon?: string;
 }

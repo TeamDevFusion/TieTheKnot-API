@@ -1,9 +1,8 @@
 import { BeforeInsert, BeforeUpdate, Column, Entity, JoinColumn, ManyToOne, OneToMany, Unique } from "typeorm";
 import { Exclude } from "class-transformer";
-import { EntityName, FKConstraint, UNIQUEConstraint } from "../../../core/enums";
+import { EntityName, FKConstraint, Role, UNIQUEConstraint } from "../../../core/enums";
 import { UserStatus } from "../enums";
-import { ICreateClientDto, ICreatePlannerDto, IUserEntity, ICreateVendorDto } from "../interfaces";
-import { Role } from "../../../core/enums/role.enum";
+import { ICreateClientDto, ICreatePlannerDto, ICreateVendorDto, IUserEntity } from "../interfaces";
 import { VendorTypeEntity } from "./vendor-type.entity";
 import { UserLogEntity } from "../../app-config/entities";
 import { BaseEntityTemplate } from "hichchi-nestjs-crud";

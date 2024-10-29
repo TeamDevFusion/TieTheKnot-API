@@ -1,6 +1,6 @@
 import { IViewDto } from "hichchi-nestjs-common/interfaces";
 import { IUserEntity, IViewUserDto } from "../interfaces";
-import { Role } from "../../../core/enums/role.enum";
+import { Role } from "../../../core/enums";
 import { removeLogs } from "../../../core/utils/utils";
 import { ViewVendorTypeDto } from "./view-vendor-type.dto";
 
