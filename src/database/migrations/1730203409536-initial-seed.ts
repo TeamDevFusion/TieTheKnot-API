@@ -1,10 +1,10 @@
-import { MigrationInterface, QueryRunner } from 'typeorm';
-import { UserEntity } from '../../modules/user/entities';
-import configuration from '../../core/configs/configuration';
-import { AuthService } from 'hichchi-nestjs-auth';
-import { Role } from '../../core/enums/role.enum';
+import { MigrationInterface, QueryRunner } from "typeorm";
+import { AuthService } from "hichchi-nestjs-auth";
+import configuration from "../../core/configs/configuration";
+import { UserEntity } from "../../modules/user/entities";
+import { Role } from "../../core/enums/role.enum";
 
-export class InitialSeed1730134067800 implements MigrationInterface {
+export class InitialSeed1730203409536 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         const { password, salt } = AuthService.generatePassword(configuration().app.defaultPassword);
