@@ -7,6 +7,7 @@ import configuration from "./core/configs/configuration";
 import * as process from "process";
 import { isOriginAllowed } from "hichchi-nestjs-common/utils";
 import { setupSwagger } from "./swagger/utils/swagger.core-utils";
+import { NextFunction, Request, Response } from "express";
 
 // eslint-disable-next-line func-style
 async function bootstrap(): Promise<void> {
@@ -30,6 +31,13 @@ async function bootstrap(): Promise<void> {
     });
 
     app.setGlobalPrefix(`${configuration().app.version}`);
+
+    app.use("/", (req: Request, res: Response, next: NextFunction) => {
+        if (req.method === "HEAD" && req.path === "/") {
+            return res.status(200).send("OK");
+        }
+        next();
+    });
 
     setupSwagger(app);
 
